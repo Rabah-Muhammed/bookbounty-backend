@@ -15,3 +15,37 @@ class CustomUser(AbstractUser):
         return self.email
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    bio = models.TextField(max_length=500, blank=True, null=True)
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+    favorite_genre = models.CharField(max_length=50, blank=True, null=True)  # e.g., "Fiction", "Sci-Fi"
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+
+
+@receiver(post_save, sender=CustomUser)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=CustomUser)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    authors = models.CharField(max_length=255)  
+    genre = models.CharField(max_length=50)
+    publication_date = models.DateField()
+    description = models.TextField(blank=True, null=True)
+    cover_image = models.ImageField(upload_to="book_covers/", blank=True, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="books")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+

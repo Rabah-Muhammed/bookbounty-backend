@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import  Book, Profile
 import re
 
 User = get_user_model()
@@ -66,3 +67,45 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+
+class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source="user.username", read_only=True)
+    email = serializers.EmailField(source="user.email", read_only=True)
+    phone = serializers.CharField(source="user.phone")
+
+    class Meta:
+        model = Profile
+        fields = ["username", "email", "phone", "bio", "avatar", "favorite_genre"]
+
+    def validate_phone(self, value):
+        if not value:  # Allow empty since it's optional
+            return value
+        pattern = r"^\+?[0-9]{10,15}$"
+        if not re.match(pattern, value):
+            raise serializers.ValidationError("Invalid phone number format.")
+        return value
+
+    def update(self, instance, validated_data):
+        # Update nested user fields
+        user_data = validated_data.pop("user", {})
+        if "phone" in user_data:
+            instance.user.phone = user_data["phone"]
+            instance.user.save()
+        # Update profile fields
+        instance.bio = validated_data.get("bio", instance.bio)
+        instance.avatar = validated_data.get("avatar", instance.avatar)
+        instance.favorite_genre = validated_data.get("favorite_genre", instance.favorite_genre)
+        instance.save()
+        return instance
+    
+ 
+class BookSerializer(serializers.ModelSerializer):
+    created_by = serializers.CharField(source="created_by.username", read_only=True)
+
+    class Meta:
+        model = Book
+        fields = [
+            "id", "title", "authors", "genre", "publication_date", 
+            "description", "cover_image", "created_by", "created_at"
+        ]
+        read_only_fields = ["created_by", "created_at"]
