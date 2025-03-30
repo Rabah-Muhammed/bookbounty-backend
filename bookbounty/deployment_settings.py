@@ -23,9 +23,10 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
 
-    "https://bookbounty-frontend.onrender.com"
+    "https://bookbounty-frontend.onrender.com",
     
 ]
+
 
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
