@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import  Book, Profile
+from .models import  Book, Profile, ReadingListBook,ReadingList
 import re
 
 User = get_user_model()
@@ -101,11 +101,35 @@ class ProfileSerializer(serializers.ModelSerializer):
  
 class BookSerializer(serializers.ModelSerializer):
     created_by = serializers.CharField(source="created_by.username", read_only=True)
+    pdf_file = serializers.FileField(required=False, allow_null=True)
 
     class Meta:
         model = Book
         fields = [
-            "id", "title", "authors", "genre", "publication_date", 
-            "description", "cover_image", "created_by", "created_at"
+            "id", "title", "authors", "genre", "publication_date",
+            "description", "cover_image", "pdf_file", "created_by", "created_at"
         ]
         read_only_fields = ["created_by", "created_at"]
+        
+        
+class ReadingListBookSerializer(serializers.ModelSerializer):
+    book_details = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReadingListBook
+        fields = ["id", "book", "order", "book_details"]
+
+    def get_book_details(self, obj):
+        return {
+            "id": obj.book.id,
+            "title": obj.book.title,
+            "cover_image": obj.book.cover_image.url if obj.book.cover_image else None,
+        }
+
+
+class ReadingListSerializer(serializers.ModelSerializer):
+    books = ReadingListBookSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ReadingList
+        fields = ["id", "name", "books"]
