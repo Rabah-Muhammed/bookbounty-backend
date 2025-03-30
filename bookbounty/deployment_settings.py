@@ -1,25 +1,24 @@
 import os
 import dj_database_url
 from .settings import *
-from .settings import BASE_DIR
 
-ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
-CSRF_TRUSTED_ORIGINS = ['https://'+os.environ.get['RENDER_EXTERNAL_HOSTNAME']]
-
+# Security settings
+ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME', 'localhost')]
+CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('RENDER_EXTERNAL_HOSTNAME', 'localhost')]
 DEBUG = False
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-secret-key-for-local-testing')
 
-SECRET_KEY = os.environ.get['SECRET_KEY']
-
+# Middleware (inherits from settings.py, adds CORS if not already in correct order)
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 # CORS_ALLOWED_ORIGINS = [
@@ -39,8 +38,7 @@ STORAGES = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default= os.environ['DATABASE_URL'],
+        default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
         conn_max_age=600
     )
 }
-
