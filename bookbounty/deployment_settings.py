@@ -21,10 +21,11 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173"
+CORS_ALLOWED_ORIGINS = [
+
+    "https://bookbounty-frontend.onrender.com"
     
-# ]
+]
 
 STORAGES = {
     "default":{
