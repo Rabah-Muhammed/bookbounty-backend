@@ -13,6 +13,10 @@ from datetime import timedelta
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-65dq969dm^@1%5v%#vlrpie@&07v$bxffiw-+zv$8b$g6_^p=@'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = []
 
@@ -96,11 +99,11 @@ WSGI_APPLICATION = 'bookbounty.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'book_bounty',  
-        'USER': 'postgres',           
-        'PASSWORD': 'rabarabi22',    
-        'HOST': 'localhost',
-        'PORT': '5432',                
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -161,8 +164,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1), 
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=5), 
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),  
     "ROTATE_REFRESH_TOKENS": True, 
     "BLACKLIST_AFTER_ROTATION": True,  
     "UPDATE_LAST_LOGIN": True, 
