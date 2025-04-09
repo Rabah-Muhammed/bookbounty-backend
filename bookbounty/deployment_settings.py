@@ -1,6 +1,10 @@
 import os
 import dj_database_url
 from .settings import *
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 # Security settings
 ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME', 'localhost')]
@@ -23,21 +27,18 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
 
-    "https://bookbounty-frontend.onrender.com"
+    "https://bookbounty-frontend.onrender.com",
     
 ]
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
-STORAGES = {
-    "default":{
-        "BACKEND" : "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles" : {
-        "BACKEND" : "whitenoise.storage.CompressedStaticFilesStorage",
-    },
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
-
 
 
 
