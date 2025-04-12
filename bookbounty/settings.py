@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     "drf_spectacular",
-
+    'storages',
 ]
 
 MIDDLEWARE = [
