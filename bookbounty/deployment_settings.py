@@ -37,7 +37,14 @@ AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'eu-north-1')
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
 AWS_S3_FILE_OVERWRITE = False
 
-MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/"
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'public-read'  # Ensure uploaded files are publicly readable
+AWS_QUERYSTRING_AUTH = False  # Disable signed URLs
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',  # Cache files for 24 hours
+}
+
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 
 STORAGES = {
