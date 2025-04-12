@@ -44,7 +44,7 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',  # Cache files for 24 hours
 }
 
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/"
 
 
 STORAGES = {
