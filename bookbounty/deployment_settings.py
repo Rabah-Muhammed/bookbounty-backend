@@ -1,9 +1,7 @@
 import os
 import dj_database_url
 from .settings import *
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+
 
 
 # Security settings
@@ -30,15 +28,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://bookbounty-frontend.onrender.com",
     
 ]
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
 
 
 
